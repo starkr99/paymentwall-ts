@@ -1,7 +1,7 @@
 import { CONSTANTS, JSHash } from "react-native-hash";
 import { Abstract } from "./Abstract";
 
-export class Widget {
+class Widget {
 	public static async calculateSignature(params: any, secret: string, version: number) {
 		var baseString = "";
 
@@ -22,3 +22,6 @@ export class Widget {
 		return await JSHash(baseString, algorithm);
 	}
 }
+
+export { Widget };
+export { Widget as WidgetSignature };

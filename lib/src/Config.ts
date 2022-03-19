@@ -14,7 +14,6 @@ export enum Controllers {
 	VC_CONTROLLER = "ps",
 	GOODS_CONTROLLER = "subscription",
 	CART_CONTROLLER = "cart",
-	WIDGET_BASE_URL = "https://api.paymentwall.com/api",
 }
 
 export class Config {
@@ -28,6 +27,8 @@ export class Config {
 		Config.apiType = apiType;
 	}
 
+	public static WIDGET_BASE_URL = "https://api.paymentwall.com/api";
+
 	public static BRICK_ONETIMETOKEN_TEST_BASE_URL: string = "pwgateway.com";
 	public static BRICK_ONETIMETOKEN_TEST_PATH: string = "/api/token";
 	public static BRICK_BASE_URL: string = "api.paymentwall.com";
@@ -37,3 +38,5 @@ export class Config {
 
 	public static VERSION: string = "2.0.0";
 }
+
+export { Config as Configure };

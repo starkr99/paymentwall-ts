@@ -11,22 +11,21 @@ export enum PeriodType {
 export class Product {
 	productId: string;
 	amount: number;
-	currencyCode: string;
-	name: string;
-	productType: ProductType;
-	periodLength: number;
-	periodType: PeriodType;
+	currencyCode: string | undefined;
+	name: string | undefined;
+	productType: ProductType | undefined;
+	periodLength: number | undefined;
+	periodType: PeriodType | undefined;
 	recurring: boolean;
 	trialProduct: number;
-
 	constructor(
 		productId: string,
-		amount: number,
-		currencyCode: string,
-		name: string,
-		productType: ProductType,
-		periodLength: number,
-		periodType: PeriodType,
+		amount: number = 0,
+		currencyCode?: string,
+		name?: string,
+		productType?: ProductType,
+		periodLength?: number,
+		periodType?: PeriodType,
 		recurring: boolean = false,
 		trialProduct: number = 0
 	) {
@@ -44,35 +43,35 @@ export class Product {
 		return this.productId;
 	}
 
-	public getAmount(): number {
+	public getAmount() {
 		return this.amount;
 	}
 
-	public getCurrencyCode(): string {
+	public getCurrencyCode() {
 		return this.currencyCode;
 	}
 
-	public getName(): string {
+	public getName() {
 		return this.name;
 	}
 
-	public getType(): ProductType {
+	public getType() {
 		return this.productType;
 	}
 
-	public getPeriodType(): PeriodType {
+	public getPeriodType() {
 		return this.periodType;
 	}
 
-	public getPeriodLength(): number {
+	public getPeriodLength() {
 		return this.periodLength;
 	}
 
-	public isRecurring(): number {
+	public isRecurring() {
 		return this.recurring;
 	}
 
-	public getTrialProduct(): number {
+	public getTrialProduct() {
 		return this.trialProduct;
 	}
 }

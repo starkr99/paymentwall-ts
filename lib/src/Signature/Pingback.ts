@@ -1,7 +1,7 @@
 import { Abstract } from "./Abstract";
 import { JSHash, CONSTANTS } from "react-native-hash";
 
-export class Pingback {
+class Pingback {
 	public static async calculateSignature(params: any, secret: string, version: number) {
 		var baseString = "";
 		var params = params;
@@ -39,3 +39,6 @@ export class Pingback {
 		return shasum;
 	}
 }
+
+export { Pingback };
+export { Pingback as PingbackSignature };

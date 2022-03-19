@@ -30,7 +30,7 @@ export class Pingback extends Base {
 		this.pingbackForBrick = pingbackForBrick || false;
 	}
 
-    public validate(skipIpWhitelistCheck: boolean) {
+	public validate(skipIpWhitelistCheck: boolean) {
 		var pingbackForBrick = this.pingbackForBrick;
 		var skipIpWhitelistCheck = skipIpWhitelistCheck || false;
 		var validated = false;
@@ -40,66 +40,59 @@ export class Pingback extends Base {
 				if (this.isSignatureValid()) {
 					validated = true;
 				} else {
-					this.appendToErrors('Wrong signature');
+					this.appendToErrors("Wrong signature");
 				}
 			} else {
-				this.appendToErrors('IP address is not whitelisted');
+				this.appendToErrors("IP address is not whitelisted");
 			}
 		} else {
-			this.appendToErrors('Missing parameters');
+			this.appendToErrors("Missing parameters");
 		}
 
 		return validated;
 	}
 
 	public isSignatureValid() {
-		var signatureParamsToSign:any = {};
-		var signatureParams:any = [];
+		var signatureParamsToSign: any = {};
+		var signatureParams: any = [];
 		if (this.getApiType() === ApiType.API_VC) {
-			signatureParams = ['uid', 'currency', 'type', 'ref'];
+			signatureParams = ["uid", "currency", "type", "ref"];
 		} else if (this.getApiType() === ApiType.API_GOODS) {
 			if (!this.pingbackForBrick) {
-				signatureParams = ['uid', 'goodsid', 'slength', 'speriod', 'type', 'ref'];
-			} else{
-				signatureParams = ['uid', 'slength', 'speriod', 'type', 'ref'];
+				signatureParams = ["uid", "goodsid", "slength", "speriod", "type", "ref"];
+			} else {
+				signatureParams = ["uid", "slength", "speriod", "type", "ref"];
 			}
-		} else { // API_CART
-			signatureParams = ['uid', 'goodsid', 'type', 'ref'];
-			this.parameters['sign_version'] = SignatureVersion.SIGNATURE_VERSION_2;
+		} else {
+			// API_CART
+			signatureParams = ["uid", "goodsid", "type", "ref"];
+			this.parameters["sign_version"] = SignatureVersion.SIGNATURE_VERSION_2;
 		}
 
-		if (!this.parameters['sign_version'] || this.parameters['sign_version'] === SignatureVersion.SIGNATURE_VERSION_1) {
-
+		if (!this.parameters["sign_version"] || this.parameters["sign_version"] === SignatureVersion.SIGNATURE_VERSION_1) {
 			var ref = this;
 
-			signatureParams.forEach(function(field:any) {
-				signatureParamsToSign[field] = (ref.parameters[field] !== undefined) ? ref.parameters[field] : null;
+			signatureParams.forEach(function (field: any) {
+				signatureParamsToSign[field] = ref.parameters[field] !== undefined ? ref.parameters[field] : null;
 			});
-			this.parameters['sign_version'] = SignatureVersion.SIGNATURE_VERSION_1;
-
+			this.parameters["sign_version"] = SignatureVersion.SIGNATURE_VERSION_1;
 		} else {
 			signatureParamsToSign = this.parameters;
 		}
 
-		var signatureCalculated = Signature.calculateSignature(signatureParamsToSign, this.getSecretKey(), this.parameters['sign_version']);
-		var signaturePassed = (this.parameters['sig'] !== undefined) ? this.parameters['sig'] : null;
+		var signatureCalculated = Signature.calculateSignature(signatureParamsToSign, this.getSecretKey(), this.parameters["sign_version"]);
+		var signaturePassed = this.parameters["sig"] !== undefined ? this.parameters["sig"] : null;
 		return signaturePassed === signatureCalculated;
 	}
 
 	public isIpAddressValid() {
-		var ipsWhitelist = [
-			'174.36.92.186',
-			'174.36.96.66',
-			'174.36.92.187',
-			'174.36.92.192',
-			'174.37.14.28'
-		];
+		var ipsWhitelist = ["174.36.92.186", "174.36.96.66", "174.36.92.187", "174.36.92.192", "174.37.14.28"];
 
 		var result = ipsWhitelist.indexOf(this.ipAddress) >= 0;
 		if (!result) {
 			const newIpRegexp = /^216\.127\.71\.(\d{1,3})$/;
 			const match = this.ipAddress.match(newIpRegexp);
-			if (!match || (parseInt(match[1]) < 0 || parseInt(match[1]) > 255)) {
+			if (!match || parseInt(match[1]) < 0 || parseInt(match[1]) > 255) {
 				return false;
 			}
 		}
@@ -108,29 +101,30 @@ export class Pingback extends Base {
 	}
 
 	public isParametersValid() {
-
 		var errorsNumber = 0;
 		var requiredParams = [];
 		if (this.getApiType() === ApiType.API_VC) {
-			requiredParams = ['uid', 'currency', 'type', 'ref', 'sig'];
+			requiredParams = ["uid", "currency", "type", "ref", "sig"];
 		} else if (this.getApiType() === ApiType.API_GOODS) {
 			if (!this.pingbackForBrick) {
-				requiredParams = ['uid', 'goodsid', 'type', 'ref', 'sig'];
-			} else{
-				requiredParams = ['uid', 'type', 'ref', 'sig'];
+				requiredParams = ["uid", "goodsid", "type", "ref", "sig"];
+			} else {
+				requiredParams = ["uid", "type", "ref", "sig"];
 			}
-		} else { // Cart API
-			requiredParams = ['uid', 'goodsid', 'type', 'ref', 'sig'];
+		} else {
+			// Cart API
+			requiredParams = ["uid", "goodsid", "type", "ref", "sig"];
 		}
 
 		var ref = this;
 
-		if (typeof ref.parameters !== 'object') {
-			ref.parameters = QueryString.parse(ref.parameters);}
+		if (typeof ref.parameters !== "object") {
+			ref.parameters = QueryString.parse(ref.parameters);
+		}
 
-		requiredParams.forEach(function(field) {
-			if ((ref.parameters[field] === undefined) || ref.parameters[field] === '') {
-				ref.appendToErrors('Parameter ' + field + ' is missing');
+		requiredParams.forEach(function (field) {
+			if (ref.parameters[field] === undefined || ref.parameters[field] === "") {
+				ref.appendToErrors("Parameter " + field + " is missing");
 				errorsNumber++;
 			}
 		});
@@ -138,56 +132,55 @@ export class Pingback extends Base {
 		return errorsNumber === 0;
 	}
 
-	public getParameter(param:any) {
+	public getParameter(param: any) {
 		if (this.parameters[param] !== undefined) {
 			return this.parameters[param];
 		}
 	}
 
-	public getType():PingBackType {
-
-		if (this.parameters['type']) {
-			const type = parseInt(this.parameters['type']);
+	public getType(): PingBackType {
+		if (this.parameters["type"]) {
+			const type = parseInt(this.parameters["type"]);
 			return type;
-		}else{
-            return PingBackType.PINGBACK_TYPE_REGULAR
-        }
+		} else {
+			return PingBackType.PINGBACK_TYPE_REGULAR;
+		}
 	}
 
 	public getUserId() {
-		return this.getParameter('uid');
+		return this.getParameter("uid");
 	}
 
 	public getVirtualCurrencyAmount() {
-		return this.getParameter('currency');
+		return this.getParameter("currency");
 	}
 
 	public getProductId() {
-		return this.getParameter('goodsid');
+		return this.getParameter("goodsid");
 	}
 
 	public getProductPeriodLength() {
-		return this.getParameter('slength');
+		return this.getParameter("slength");
 	}
 
 	public getProductPeriodType() {
-		return this.getParameter('speriod');
+		return this.getParameter("speriod");
 	}
 
 	public getReferenceId() {
-		return this.getParameter('ref');
+		return this.getParameter("ref");
 	}
 
 	public getPingbackUniqueId() {
-		return this.getReferenceId() + '_' + this.getType();
+		return this.getReferenceId() + "_" + this.getType();
 	}
 
 	public getProduct() {
 		return new Product(
 			this.getProductId(),
 			0,
-			null,
-			null,
+			undefined,
+			undefined,
 			this.getProductPeriodLength() > 0 ? ProductType.TYPE_SUBSCRIPTION : ProductType.TYPE_FIXED,
 			this.getProductPeriodLength(),
 			this.getProductPeriodType()
@@ -195,22 +188,22 @@ export class Pingback extends Base {
 	}
 
 	public getProducts() {
-		var result = [];
-		var productIds = this.getParameter('goodsid');
+		var result: Product[] = [];
+		var productIds = this.getParameter("goodsid");
 
 		if (productIds && productIds instanceof Array) {
-			productIds.forEach(function(id) {
+			productIds.forEach(function (id) {
 				result.push(new Product(id));
 			});
 		}
 		return result;
-	},
+	}
 
 	public isDeliverable() {
-		return (this.getType() === Pingback.PINGBACK_TYPE_REGULAR || this.getType() === Pingback.PINGBACK_TYPE_GOODWILL);
-	},
+		return this.getType() === PingBackType.PINGBACK_TYPE_REGULAR || this.getType() === PingBackType.PINGBACK_TYPE_GOODWILL;
+	}
 
 	public isCancelable() {
-		return this.getType() === Pingback.PINGBACK_TYPE_NEGATIVE;
-	},
+		return this.getType() === PingBackType.PINGBACK_TYPE_NEGATIVE;
+	}
 }
