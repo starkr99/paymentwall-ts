@@ -21,12 +21,6 @@ export class Config {
 	public static appKey: string;
 	public static secretKey: string;
 
-	public static init(apiType: ApiType, appKey: string, secretKey: string) {
-		Config.appKey = appKey;
-		Config.secretKey = secretKey;
-		Config.apiType = apiType;
-	}
-
 	public static WIDGET_BASE_URL = "https://api.paymentwall.com/api";
 
 	public static BRICK_ONETIMETOKEN_TEST_BASE_URL: string = "pwgateway.com";
@@ -39,4 +33,8 @@ export class Config {
 	public static VERSION: string = "2.0.0";
 }
 
-export { Config as Configure };
+export function Configure(apiType: ApiType, appKey: string, secretKey: string) {
+	Config.appKey = appKey;
+	Config.secretKey = secretKey;
+	Config.apiType = apiType;
+}
