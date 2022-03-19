@@ -21,7 +21,7 @@ export class Config {
 	public static appKey: string;
 	public static secretKey: string;
 
-	public init(appKey: string, secretKey: string, apiType: ApiType) {
+	public static init(apiType: ApiType, appKey: string, secretKey: string) {
 		Config.appKey = appKey;
 		Config.secretKey = secretKey;
 		Config.apiType = apiType;
